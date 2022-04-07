@@ -32,23 +32,23 @@ class UserViewSet(viewsets.ModelViewSet):
 def api_posts(request, id):
     author = get_object_or_404(User, id=id)
     user = request.user
+    if Follow.objects.filter(author=author, user=user).exists():
+        if request.method == 'POST':
+            msg = 'Уже есть'
+            return Response(msg, status=status.HTTP_204_NO_CONTENT)
+        if request.method == 'DELETE':
+                Follow.objects.filter(author=author, user=user).delete()
+                msg = 'Вы отписались!'
+                return Response(msg, status=status.HTTP_204_NO_CONTENT)
     if request.method == 'POST':
         if author != user:
-            if Follow.objects.filter(author=author, user=user).exists():
-                msg = 'Уже есть'
-                return Response(msg, status=status.HTTP_204_NO_CONTENT)
             msg = 'OK'
             Follow.objects.create(author=author, user=user)
             return Response(msg, status=status.HTTP_200_OK)
         msg = 'На себя нельзя подписаться'
-        return Response(msg, status=status.HTTP_400_BAD_REQUEST)
-    if request.method == 'DELETE':
-        if Follow.objects.filter(author=author, user=user).exists():
-            Follow.objects.filter(author=author, user=user).delete()
-            msg = 'Вы отписались!'
-            return Response(msg, status=status.HTTP_204_NO_CONTENT)
-        msg = 'Вы не подписаны на пользователя'
         return Response(msg, status=status.HTTP_404_NOT_FOUND)
+    msg = 'Такой подписки не существует'
+    return Response(msg, status=status.HTTP_404_NOT_FOUND)
 
 
 class Subs(generics.ListAPIView):

@@ -53,19 +53,31 @@ class MyUserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
 
-    id = models.AutoField(primary_key=True, unique=True)
-    username = models.CharField(max_length=50, unique=True)
-    email = models.EmailField(max_length=100, unique=True)
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
-    first_name = models.CharField(max_length=50, unique=False)
-    last_name = models.CharField(max_length=50, unique=False)
-    is_subscribed = models.BooleanField(default=False)
+    id = models.AutoField(primary_key=True, unique=True,
+                          verbose_name='id',)
+    username = models.CharField(max_length=50, unique=True,
+                                verbose_name='ник',)
+    email = models.EmailField(max_length=100, unique=True,
+                              verbose_name='почта',)
+    is_active = models.BooleanField(default=True,
+                                    verbose_name='активность',)
+    is_staff = models.BooleanField(default=False,
+                                   verbose_name='staff',)
+    first_name = models.CharField(max_length=50, unique=False,
+                                  verbose_name='имя',)
+    last_name = models.CharField(max_length=50, unique=False,
+                                 verbose_name='фамилия',)
+    is_subscribed = models.BooleanField(default=False,
+                                        verbose_name='подписан или нет',)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     objects = MyUserManager()
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     @property
     def token(self):
@@ -86,28 +98,45 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, SECRET_KEY, algorithm='HS256')
 
         return token
+    
+    def __str__(self):
+        return ('__all__').format(**self.__dict__)
 
 
 class Follow(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
-                             related_name="follower")
+                             related_name="follower",
+                             verbose_name='подписчик',)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name="following")
+                               related_name="following",
+                               verbose_name='автор',)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['user', 'author'],
                                     name='unique_field')
         ]
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+
+    def __str__(self):
+        return self.user, self.author
 
 
 class Favorites(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,
+                             verbose_name='подписчик',)
     recipe = models.OneToOneField(Recipe, on_delete=models.CASCADE,
-                                  related_name="favorites")
+                                  related_name="favorites",
+                                  verbose_name='рецепт',)
 
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['user', 'recipe'],
                                     name='unique_field')
         ]
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
+
+    def __str__(self):
+        return self.user, self.recipe
