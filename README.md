@@ -1,43 +1,29 @@
-## Проект Foodgram
-Проект Foodgram позволяет пользователям публиковать рецепты, добавлять рецепты в избранное и список покупок, 
-подписыватся на других пользователей и скачивать список продуктов.
 
-## Технологии
-- Python
-- Django Rest Framework
+## FoodGram
+
+- Проект FoodGram - сайт с рецептами блюд, можно добавлять свои рецепты а так же скачивать уже готовые..
+##### Технологии:
+- Nginx
+- Gunicorn
+- Django REST
 - Docker
-- postgresql
-- nginx
-- gunicorn
+- Postgres
 
-## Начало работы
+##### Запуск проекта:
+- Запустить ваш Docker
+- Перейти в папку ./infra
+- Выполнить команду:
+[[[docker-compose up -d --build --force-recreate]]]
+- ✨Magic ✨(Сервис запустится в фоновом режиме)
+- Сделать миграции:
+[[[docker-compose exec backend python manage.py migrate]]]
+- Загрузить тестовые данные:
+[[[docker-compose exec backend python manage.py loaddata 1.json]]]
+- Тестовый супер-пользователь уже есть:
+[[[1@1.ru - email;
+1 - password;]]]
+- Создание своего супер-пользователя:
+docker-compose exec backend python manage.py createsuperuser
 
-Клонируйте репозиторий на локальную машину и перейдите в созданную папку.
-```
-git clone https://github.com/Minibaev/foodgram-project-react.git && cd foodgram-project-react/
-```
-
-### Подготовка развертывания приложения
-
-Для работы с проектом в контейнерах должен быть установлен Docker и docker-compose.  
-
-
-### Развертывание приложения
-
-1. Необходимо запустить сборку контейнеров
-```
-cd infra/ && docker-compose up -d --build
-```
-2. Необходимо выполнить миграции и собрать статику приложения, для этого запустите скрипт
-```
-docker exec -ti minibaev_backend_1 python manage.py migrate
-```
-3. Для использования панели администратора по адресу http://localhost/admin/ необходимо создать суперпользователя.
-```
-docker exec -it minibaev_backend_1 python manage.py createsuperuser
-```
-
-Оживший из этого кода сайт живет [здесь](http://51.250.16.52/admin/)
-
-## Технологии используемые в проекте
-Python, Django, Django REST Framework, PostgreSQL, Nginx, Docker
+#### Автор
+- george20211
