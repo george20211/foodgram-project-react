@@ -16,9 +16,7 @@ services:
       - .env
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: georg2022/backend:v1
     restart: always
     volumes:
       - static_value:/app/static/
