@@ -4,6 +4,9 @@ from .models import (Favorite, Follow, Ingredient, IngredientInRecipe,
                      Purchase, Recipe, Tag)
 
 
+class RecipeIngredientAdmin(admin.TabularInline):
+    model = IngredientInRecipe
+
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit')
     search_fields = ('^name',)
@@ -16,6 +19,10 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def favorited(self, obj):
         return Favorite.objects.filter(recipe=obj).count()
+    
+    inlines = [
+        RecipeIngredientAdmin,
+    ]
 
     favorited.short_description = 'В избранном'
 
@@ -34,14 +41,15 @@ class TagAdmin(admin.ModelAdmin):
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = ('author', 'user')
 
-
-class RecipeIngredientAdmin(admin.ModelAdmin):
-    list_display = ('ingredient', 'amount')
+# Редактирование количества ингридиентов
+# перенес на страницу рецептов
+"""class RecipeIngredientAdmin(admin.ModelAdmin):
+    list_display = ('ingredient', 'amount')"""
 
 admin.site.register(Purchase, PurchaseAdmin)
 admin.site.register(Favorite, FavoriteAdmin)
 admin.site.register(Follow, SubscriptionAdmin)
-admin.site.register(IngredientInRecipe)
+#admin.site.register(IngredientInRecipe)
 admin.site.register(Ingredient, IngredientAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Tag, TagAdmin)

@@ -16,7 +16,7 @@ services:
       - .env
 
   backend:
-    image: georg2022/backend:v1
+    image: georg2022/backend:v2
     restart: always
     volumes:
       - static_value:/app/static/
